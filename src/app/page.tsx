@@ -12,6 +12,7 @@ import { LanguageSelector } from "@/components/language-selector"
 import Link from "next/link"
 import mammoth from "mammoth";
 import Tesseract from "tesseract.js";
+import Header from "@/components/Header";
 
 export default function HomePage() {
   const [file, setFile] = useState<File | null>(null)
@@ -227,17 +228,6 @@ export default function HomePage() {
 
   return (
     <div className="min-h-screen bg-white">
-      {/* Header */}
-      <header className="border-b border-gray-100 py-6">
-        <div className="container mx-auto px-4 flex justify-between items-center">
-          <div>
-            <h1 className="text-3xl font-bold text-gray-900">{t("appName")}</h1>
-            <p className="text-gray-600 mt-2">{t("tagline")}</p>
-          </div>
-          <LanguageSelector />
-        </div>
-      </header>
-
       {/* Main Content */}
       <main className="container mx-auto px-4 py-12">
         <div className="max-w-4xl mx-auto">
@@ -367,21 +357,6 @@ export default function HomePage() {
           )}
         </div>
       </main>
-
-      {/* Footer */}
-      <footer className="border-t border-gray-100 py-8 mt-16">
-        <div className="container mx-auto px-4 text-center">
-          <div className="space-x-6">
-            <Link href="/legal-notice" className="text-gray-500 hover:text-gray-700 hover:underline text-sm">
-              {t("legalNotice")}
-            </Link>
-            <Link href="/contact" className="text-gray-500 hover:text-gray-700 hover:underline text-sm">
-              {t("contact")}
-            </Link>
-          </div>
-          <p className="text-gray-400 text-xs mt-4">{t("copyright")}</p>
-        </div>
-      </footer>
     </div>
   )
 }
