@@ -360,7 +360,7 @@ export default function HomePage() {
                   className="mt-4 text-blue-600 underline underline-offset-4 hover:text-blue-800 transition-colors text-lg font-medium bg-transparent border-none p-0 focus:outline-none"
                   style={{ background: 'none', border: 'none', cursor: 'pointer' }}
                 >
-                  📸 Prendre une photo
+                  📸 {t('takePhoto')}
                 </button>
               </div>
               <input ref={fileInputRef} type="file" accept=".pdf" onChange={handleFileSelect} className="hidden" />
