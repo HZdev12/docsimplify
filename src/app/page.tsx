@@ -13,6 +13,9 @@ import Link from "next/link"
 import mammoth from "mammoth";
 import Tesseract from "tesseract.js";
 import Header from "@/components/Header";
+import jsPDF from "jspdf";
+import { addUserSummary, auth } from "@/lib/firebase";
+import { onAuthStateChanged } from "firebase/auth";
 
 export default function HomePage() {
   const [file, setFile] = useState<File | null>(null)
@@ -26,6 +29,14 @@ export default function HomePage() {
   const [cameraError, setCameraError] = useState<string | null>(null);
   const videoRef = useRef<HTMLVideoElement>(null);
   const streamRef = useRef<MediaStream | null>(null);
+  const [currentUser, setCurrentUser] = useState<any>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      setCurrentUser(user);
+    });
+    return () => unsubscribe();
+  }, []);
 
   // Ouvre la caméra quand showCamera passe à true
   useEffect(() => {
@@ -186,6 +197,14 @@ export default function HomePage() {
       const data = await response.json();
       if (data.summary) {
         setResult(data.summary);
+        // Branchement Firestore : enregistrer le résumé si connecté
+        if (currentUser) {
+          await addUserSummary({
+            uid: currentUser.uid,
+            title: file.name || "Document PDF",
+            summary: data.summary,
+          });
+        }
       } else {
         setResult(data.error || "Erreur lors du résumé.");
       }
@@ -225,6 +244,45 @@ export default function HomePage() {
       description: t("downloadMessage"),
     })
   }
+
+  const handleDownloadCSV = () => {
+    const csvContent = `"Résumé simplifié"\n"${result.replace(/"/g, '""').replace(/\n/g, ' ')}"`;
+    const blob = new Blob([csvContent], { type: "text/csv" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "simplified-contract.csv";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    toast({ title: t("downloadStarted"), description: "Fichier CSV généré." });
+  };
+
+  const handleDownloadWord = () => {
+    const header = `<html xmlns:o='urn:schemas-microsoft-com:office:office'\nxmlns:w='urn:schemas-microsoft-com:office:word'\nxmlns='http://www.w3.org/TR/REC-html40'>\n<head><meta charset='utf-8'></head><body>`;
+    const footer = "</body></html>";
+    const html = `${header}<h2>Résumé simplifié</h2><p>${result.replace(/\n/g, "<br>")}</p>${footer}`;
+    const blob = new Blob([html], { type: "application/msword" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "simplified-contract.doc";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    toast({ title: t("downloadStarted"), description: "Fichier Word généré." });
+  };
+
+  const handleDownloadPDF = () => {
+    const doc = new jsPDF();
+    doc.setFontSize(14);
+    doc.text("Résumé simplifié :", 10, 20);
+    doc.setFontSize(12);
+    const lines = doc.splitTextToSize(result, 180);
+    doc.text(lines, 10, 30);
+    doc.save("simplified-contract.pdf");
+    toast({ title: t("downloadStarted"), description: "Fichier PDF généré." });
+  };
 
   return (
     <div className="min-h-screen bg-white">
@@ -335,23 +393,51 @@ export default function HomePage() {
                 </div>
               </div>
 
-              <div className="flex flex-col sm:flex-row gap-4 justify-center">
-                <Button
-                  onClick={handleCopy}
-                  variant="outline"
-                  className="border-blue-500 text-blue-600 hover:bg-blue-50 px-6 py-3 bg-transparent"
-                >
-                  <Copy className="w-4 h-4 mr-2" />
-                  {t("copyText")}
-                </Button>
-                <Button
-                  onClick={handleDownload}
-                  variant="outline"
-                  className="border-blue-500 text-blue-600 hover:bg-blue-50 px-6 py-3 bg-transparent"
-                >
-                  <Download className="w-4 h-4 mr-2" />
-                  {t("downloadPdf")}
-                </Button>
+              {/* Zone premium pour les boutons de téléchargement */}
+              <div className="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-2xl shadow-xl p-6 mb-4 flex flex-col items-center">
+                <h4 className="text-lg font-semibold text-blue-700 mb-4">Télécharger le résumé</h4>
+                <div className="flex flex-wrap gap-4 justify-center">
+                  <Button
+                    onClick={handleCopy}
+                    variant="outline"
+                    className="border-blue-500 text-blue-600 hover:bg-blue-50 px-6 py-3 bg-transparent"
+                  >
+                    <Copy className="w-4 h-4 mr-2" />
+                    {t("copyText")}
+                  </Button>
+                  <Button
+                    onClick={handleDownload}
+                    variant="outline"
+                    className="border-blue-500 text-blue-600 hover:bg-blue-50 px-6 py-3 bg-transparent"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    TXT
+                  </Button>
+                  <Button
+                    onClick={handleDownloadCSV}
+                    variant="outline"
+                    className="border-blue-500 text-green-600 hover:bg-green-50 px-6 py-3 bg-transparent"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    CSV
+                  </Button>
+                  <Button
+                    onClick={handleDownloadWord}
+                    variant="outline"
+                    className="border-blue-500 text-indigo-600 hover:bg-indigo-50 px-6 py-3 bg-transparent"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    Word
+                  </Button>
+                  <Button
+                    onClick={handleDownloadPDF}
+                    variant="outline"
+                    className="border-blue-500 text-red-600 hover:bg-red-50 px-6 py-3 bg-transparent"
+                  >
+                    <Download className="w-4 h-4 mr-2" />
+                    PDF
+                  </Button>
+                </div>
               </div>
             </Card>
           )}

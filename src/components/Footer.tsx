@@ -14,6 +14,9 @@ export default function Footer() {
           <Link className="text-gray-500 hover:text-gray-700 hover:underline text-sm" href="/contact">
             Contact
           </Link>
+          <Link className="text-gray-500 hover:text-gray-700 hover:underline text-sm" href="/pricing">
+            Tarifs
+          </Link>
         </div>
         <p className="text-gray-400 text-xs mt-4">© 2025 DocSimplify. Tous droits réservés.</p>
       </div>

@@ -1,5 +1,7 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
 import { getAnalytics, isSupported } from "firebase/analytics";
+import { getAuth, signInWithEmailAndPassword, GoogleAuthProvider, signInWithPopup, createUserWithEmailAndPassword, signOut } from "firebase/auth";
+import { getFirestore, collection, addDoc, getDocs, query, where, Timestamp, deleteDoc, doc } from "firebase/firestore";
 
 const firebaseConfig = {
   apiKey: "AIzaSyB5JgDVpU7_fvJWmRvV80Oc7tDyhNhm0oc",
@@ -20,4 +22,44 @@ if (typeof window !== "undefined") {
   });
 }
 
-export { app, analytics }; 
+export { app, analytics };
+
+export const auth = getAuth(app);
+export const googleProvider = new GoogleAuthProvider();
+
+export async function loginWithEmail(email: string, password: string) {
+  return signInWithEmailAndPassword(auth, email, password);
+}
+
+export async function loginWithGoogle() {
+  return signInWithPopup(auth, googleProvider);
+}
+
+export async function registerWithEmail(email: string, password: string) {
+  return createUserWithEmailAndPassword(auth, email, password);
+}
+
+export async function logout() {
+  return signOut(auth);
+}
+
+export const db = getFirestore(app);
+
+export async function addUserSummary({ uid, title, summary }: { uid: string, title: string, summary: string }) {
+  return addDoc(collection(db, "summaries"), {
+    uid,
+    title,
+    summary,
+    createdAt: Timestamp.now(),
+  });
+}
+
+export async function getUserSummaries(uid: string) {
+  const q = query(collection(db, "summaries"), where("uid", "==", uid));
+  const querySnapshot = await getDocs(q);
+  return querySnapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+}
+
+export async function deleteUserSummary(id: string) {
+  return deleteDoc(doc(db, "summaries", id));
+} 
