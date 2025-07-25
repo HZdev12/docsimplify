@@ -37,7 +37,7 @@ export default function Dashboard() {
         <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100 flex flex-col items-start">
           <h2 className="text-xl font-semibold text-blue-700 mb-2">{t('dashboardUploadTitle')}</h2>
           <p className="text-gray-600 mb-4">{t('dashboardUploadDesc')}</p>
-          <Link href="/upload" className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 font-semibold">{t('dashboardUploadCTA')}</Link>
+          <Link href="/" className="bg-green-600 text-white px-6 py-2 rounded hover:bg-green-700 font-semibold">{t('dashboardUploadCTA')}</Link>
         </div>
         {/* Profil utilisateur */}
         <div className="bg-white rounded-xl shadow-md p-6 border border-gray-100 flex flex-col items-start">

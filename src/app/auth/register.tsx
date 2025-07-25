@@ -3,6 +3,7 @@ import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FcGoogle } from "react-icons/fc";
 import { registerWithEmail, loginWithGoogle } from "@/lib/firebase";
+import { useLanguage } from "@/contexts/language-context";
 
 export default function RegisterPage() {
   const [email, setEmail] = useState("");
@@ -10,6 +11,7 @@ export default function RegisterPage() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const { t } = useLanguage();
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -18,9 +20,9 @@ export default function RegisterPage() {
     setSuccess("");
     try {
       await registerWithEmail(email, password);
-      setSuccess("Inscription réussie ! Vous pouvez vous connecter.");
+      setSuccess(t('registerSuccess'));
       setError("");
-      // window.location.href = "/dashboard";
+      window.location.href = "/dashboard";
     } catch (err: any) {
       setError(err.message || "Erreur d'inscription.");
     }
@@ -33,9 +35,9 @@ export default function RegisterPage() {
     setSuccess("");
     try {
       await loginWithGoogle();
-      setSuccess("Inscription Google réussie !");
+      setSuccess(t('registerGoogleSuccess'));
       setError("");
-      // window.location.href = "/dashboard";
+      window.location.href = "/dashboard";
     } catch (err: any) {
       setError(err.message || "Erreur Google Auth.");
     }

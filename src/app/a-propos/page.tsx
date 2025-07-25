@@ -1,4 +1,6 @@
+"use client";
 import { useLanguage } from "@/contexts/language-context";
+import Link from "next/link";
 
 export default function APropos() {
   const { t } = useLanguage();
@@ -24,9 +26,9 @@ export default function APropos() {
           <li>{t('aboutFeatureUX')}</li>
         </ul>
         <div className="text-center mb-8">
-          <a href="/" className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-lg shadow-lg transition-all duration-200">
+          <Link href="/" className="inline-block bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-8 rounded-lg text-lg shadow-lg transition-all duration-200">
             {t('aboutCTA')}
-          </a>
+          </Link>
           <p className="mt-2 text-blue-700 font-medium">{t('aboutTryFree')}</p>
         </div>
         <h2 className="text-xl font-semibold text-blue-800 mb-2">{t('aboutSecurityTitle')}</h2>

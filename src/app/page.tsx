@@ -255,7 +255,7 @@ export default function HomePage() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    toast({ title: t("downloadStarted"), description: "Fichier CSV généré." });
+    toast({ title: t("downloadStarted"), description: t("csvFileGenerated") });
   };
 
   const handleDownloadWord = () => {
@@ -270,7 +270,7 @@ export default function HomePage() {
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
-    toast({ title: t("downloadStarted"), description: "Fichier Word généré." });
+    toast({ title: t("downloadStarted"), description: t("wordFileGenerated") });
   };
 
   const handleDownloadPDF = () => {
@@ -281,7 +281,7 @@ export default function HomePage() {
     const lines = doc.splitTextToSize(result, 180);
     doc.text(lines, 10, 30);
     doc.save("simplified-contract.pdf");
-    toast({ title: t("downloadStarted"), description: "Fichier PDF généré." });
+    toast({ title: t("downloadStarted"), description: t("pdfFileGenerated") });
   };
 
   return (
@@ -304,7 +304,7 @@ export default function HomePage() {
                   <button
                     className="absolute top-2 right-2 text-gray-500 hover:text-gray-700 text-2xl"
                     onClick={() => setShowCamera(false)}
-                    aria-label="Fermer"
+                    aria-label={t('close')}
                   >
                     ×
                   </button>
@@ -395,7 +395,7 @@ export default function HomePage() {
 
               {/* Zone premium pour les boutons de téléchargement */}
               <div className="bg-gradient-to-br from-blue-50 to-white border border-blue-100 rounded-2xl shadow-xl p-6 mb-4 flex flex-col items-center">
-                <h4 className="text-lg font-semibold text-blue-700 mb-4">Télécharger le résumé</h4>
+                <h4 className="text-lg font-semibold text-blue-700 mb-4">{t('downloadSummaryTitle')}</h4>
                 <div className="flex flex-wrap gap-4 justify-center">
                   <Button
                     onClick={handleCopy}
@@ -411,7 +411,7 @@ export default function HomePage() {
                     className="border-blue-500 text-blue-600 hover:bg-blue-50 px-6 py-3 bg-transparent"
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    TXT
+                    {t('txt')}
                   </Button>
                   <Button
                     onClick={handleDownloadCSV}
@@ -419,7 +419,7 @@ export default function HomePage() {
                     className="border-blue-500 text-green-600 hover:bg-green-50 px-6 py-3 bg-transparent"
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    CSV
+                    {t('csv')}
                   </Button>
                   <Button
                     onClick={handleDownloadWord}
@@ -427,7 +427,7 @@ export default function HomePage() {
                     className="border-blue-500 text-indigo-600 hover:bg-indigo-50 px-6 py-3 bg-transparent"
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    Word
+                    {t('word')}
                   </Button>
                   <Button
                     onClick={handleDownloadPDF}
@@ -435,7 +435,7 @@ export default function HomePage() {
                     className="border-blue-500 text-red-600 hover:bg-red-50 px-6 py-3 bg-transparent"
                   >
                     <Download className="w-4 h-4 mr-2" />
-                    PDF
+                    {t('pdf')}
                   </Button>
                 </div>
               </div>
